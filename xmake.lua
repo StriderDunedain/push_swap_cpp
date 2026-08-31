@@ -4,6 +4,7 @@ set_languages("c++23")
 set_toolchains("clang")
 
 add_rules("mode.debug", "mode.release")
+set_policy("build.across_targets_in_parallel", true)
 
 set_warnings("all", "extra")
 add_cxxflags("-Wpedantic", "-Wconversion", "-Wshadow", { tools = { "gcc", "clang" } })
