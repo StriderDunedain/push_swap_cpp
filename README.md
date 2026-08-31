@@ -1,64 +1,64 @@
 # push_swap 3.0
 
-A modern C++ take on 42's `push_swap`, and a continuation of Maksim Trukhinov's
-[`push_swap_v2.0`](https://github.com/StriderDunedain/push_swap_v2.0), built around
-one idea:
+An unrestricted C++23 reimplementation of 42's `push_swap`.
 
-> Describe the problem once, then let generic components decide how it is solved.
-
-`push_swap` asks you to sort integers using two stacks and eleven allowed operations.
-The original project is deliberately restricted C. Version 3.0 drops those restrictions
-so Maksim can learn C++ by rebuilding the same problem for fun.
+This continues my
+[`push_swap_v2.0`](https://github.com/StriderDunedain/push_swap_v2.0). Version 2.0
+made sorting strategies declarative and interchangeable. I am using version 3.0 to
+learn modern C++ without the restrictions of the original C subject.
 
 ## Generic strategies
 
-Version 2.0 made sorting strategies declarative and interchangeable. This version keeps
-that design and plans to express the shared contract with concepts and templates.
+Each sorting strategy will implement the same concept. A strategy receives compatible
+stack and output types without depending on their concrete implementations.
 
-A strategy should receive compatible stack and output types without knowing their
-concrete storage or destination. Adding an algorithm should mean implementing the
-contract and describing its metadata, not adding another special case throughout the
-program.
+Strategy metadata will contain the selector, name, complexity, and implementation.
+Adding a strategy should only require implementing the concept and registering its
+metadata.
+
+The adaptive strategy will measure input disorder and select another registered
+strategy. Selection and sorting remain separate.
+
+## Data flow
 
 ```text
-input
-  -> validate and own values
+parse and validate input
+  -> own the values
   -> measure disorder
-  -> select a compatible strategy
+  -> select a strategy
   -> emit operations through an output sink
 ```
 
-## Ownership without surprises
+## C++ design
 
-Values own their resources, cleanup happens through RAII, and borrowed data remains
-visibly borrowed. Components should compose without taking ownership of one another.
-There are no global variables and no runtime hierarchy tying the algorithms together.
+- C++23 modules
+- concepts for component contracts
+- templates for stacks, strategies, and sinks
+- explicit ownership and value semantics
+- RAII for resource cleanup
+- typed results instead of exceptions
+- variants with exhaustive matching
+- no global state
+- no runtime class hierarchy
 
-## Errors and output are values
+Input parsing produces an owning validated configuration. Borrowed data stays visibly
+borrowed. Components do not take ownership of one another unless their type says so.
 
-The plan is to use no exceptions. Fallible operations return typed results, variants are
-handled with exhaustive matching, and errors remain visible until the outer program
-boundary.
+Sorting operations, diagnostics, and benchmark data use separate output sinks. The
+sorting algorithms do not depend directly on stdout, stderr, files, or test collectors.
 
-Sorting operations, diagnostics, and benchmark data go through replaceable output
-sinks. The algorithms therefore do not need to know about stdout, stderr, files, tests,
-or any other destination.
+## Status
 
-## Why a third version?
-
-The first version solved Push_swap. Version 2.0 explored interchangeable C strategies.
-Version 3.0 is Maksim's C++ learning project: the same small problem, now used to play
-with modules, concepts, templates, value semantics, RAII, and typed error handling
-without the original subject restrictions.
-
-The repository is only a compiling scaffold for now. Each module states the component
-that could live there; the actual Push_swap implementation is still to come.
+This is currently a compiling scaffold. The modules define the planned component
+boundaries. Push_swap is not implemented yet.
 
 ## Usage
 
 ```sh
 mise run build
+mise run dev
 mise run run
+mise run format
+mise run compiledb
+mise run clean
 ```
-
-Other development commands are available through `mise tasks`.
