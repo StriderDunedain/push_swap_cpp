@@ -1,0 +1,27 @@
+[tools]
+clang = "latest"
+clang-format = "latest"
+
+[tasks.build]
+description = "build push_swap"
+run = "xmake f -m release -y && xmake build -y"
+
+[tasks.dev]
+description = "build push_swap with debug checks"
+run = "xmake f -m debug -y && xmake build -y"
+
+[tasks.run]
+description = "build and run push_swap"
+run = "xmake build -y && xmake run push_swap"
+
+[tasks.compiledb]
+description = "generate compile_commands.json for clangd"
+run = "xmake build -a -y && xmake project -k compile_commands --lsp=clangd"
+
+[tasks.format]
+description = "format C++ modules and sources"
+run = "find include modules src -type f \\( -name '*.h' -o -name '*.cpp' -o -name '*.cppm' \\) -print0 | xargs -0 clang-format -i"
+
+[tasks.clean]
+description = "remove generated build files"
+run = "xmake clean -a"

@@ -1,0 +1,15 @@
+/compile_commands.json
+/en.subject.pdf
+/push_swap
+/.bear-fingerprints/
+/.cache/
+*.out
+*.o
+*.obj
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+.xmake/
+build/
